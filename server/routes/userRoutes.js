@@ -8,6 +8,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
+  resetPassword,
 } = require("../controllers/userController");
 
 // Import middleware
@@ -20,6 +21,10 @@ const { protect, admin } = require("../middleware/authMiddleware");
 // CREATE - Register new user (PUBLIC - for testing)
 // POST http://localhost:5000/api/users
 router.post("/", createUser);
+
+// RESET PASSWORD - Public (by email)
+// PUT http://localhost:5000/api/users/reset-password
+router.put("/reset-password", resetPassword);
 
 // READ - Get all users (ADMIN ONLY)
 // GET http://localhost:5000/api/users

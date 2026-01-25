@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Import controller functions
-const { register, login, getProfile } = require("../controllers/authController");
+const { register, login, adminLogin, getProfile } = require("../controllers/authController");
 
 // Import middleware
 const { protect } = require("../middleware/authMiddleware");
@@ -18,6 +18,10 @@ router.post("/register", register);
 // LOGIN - Authenticate user
 // POST http://localhost:5000/api/auth/login
 router.post("/login", login);
+
+// ADMIN LOGIN - Authenticate admin only
+// POST http://localhost:5000/api/auth/admin/login
+router.post("/admin/login", adminLogin);
 
 // GET PROFILE - Get current user's profile (PROTECTED)
 // GET http://localhost:5000/api/auth/profile

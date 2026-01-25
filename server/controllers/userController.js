@@ -103,6 +103,43 @@ const updateUser = async (req, res) => {
 };
 
 // ========================================
+// RESET PASSWORD - Verify current password first
+// ========================================
+const resetPassword = async (req, res) => {
+  try {
+    const { email, currentPassword, password } = req.body;
+
+    if (!email || !currentPassword || !password) {
+      return res.status(400).json({ message: "Email, current password, and new password are required" });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Verify current password
+    const isPasswordValid = await user.comparePassword(currentPassword);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Current password is incorrect" });
+    }
+
+    // Assigning then saving triggers the pre-save hash middleware
+    user.password = password;
+    await user.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// ========================================
 // DELETE - Delete user by ID
 // ========================================
 const deleteUser = async (req, res) => {
@@ -131,4 +168,5 @@ module.exports = {
   getUserById,
   updateUser,
   deleteUser,
+  resetPassword,
 };

@@ -46,9 +46,21 @@ const productSchema = new mongoose.Schema(
       type: String,
       default: "https://via.placeholder.com/300",  // Placeholder image
     },
+    images: {
+      type: [String],
+      default: [],
+    },
     inStock: {
       type: Boolean,
       default: true,
+    },
+    isApproved: {
+      type: Boolean,
+      default: false, // Only approved items are shown to shoppers
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {

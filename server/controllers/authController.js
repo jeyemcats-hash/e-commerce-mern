@@ -11,6 +11,40 @@ const generateToken = (userId) => {
 };
 
 // ========================================
+// ADMIN LOGIN - Authenticate admin only
+// ========================================
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ email });
+
+    // Validate credentials and admin flag
+    const isValid = user && (await user.comparePassword(password));
+    if (!isValid || !user.isAdmin) {
+      return res.status(401).json({ message: "Invalid credentials or not authorized" });
+    }
+
+    // Generate token
+    const token = generateToken(user._id);
+
+    res.status(200).json({
+      message: "Admin login successful",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// ========================================
 // REGISTER - Create new user account
 // ========================================
 const register = async (req, res) => {
@@ -50,7 +84,7 @@ const register = async (req, res) => {
 };
 
 // ========================================
-// LOGIN - Authenticate user
+// LOGIN - Authenticate user (regular users only)
 // ========================================
 const login = async (req, res) => {
   try {
@@ -61,6 +95,13 @@ const login = async (req, res) => {
 
     // Check if user exists and password is correct
     if (user && (await user.comparePassword(password))) {
+      // Reject if user is admin
+      if (user.isAdmin) {
+        return res.status(403).json({ 
+          message: "Admins must use the admin portal. Please visit /admin-login" 
+        });
+      }
+
       // Generate token
       const token = generateToken(user._id);
 
@@ -94,7 +135,13 @@ const getProfile = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(user);
+    // Return user in consistent format with login endpoints
+    res.status(200).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -103,5 +150,6 @@ const getProfile = async (req, res) => {
 module.exports = {
   register,
   login,
+  adminLogin,
   getProfile,
 };
