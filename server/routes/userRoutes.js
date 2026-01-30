@@ -7,6 +7,7 @@ const {
   getAllUsers,
   getUserById,
   updateUser,
+  deleteMe,
   deleteUser,
   resetPassword,
 } = require("../controllers/userController");
@@ -37,6 +38,10 @@ router.get("/:id", protect, getUserById);
 // UPDATE - Update user by ID (PROTECTED)
 // PUT http://localhost:5000/api/users/:id
 router.put("/:id", protect, updateUser);
+
+// DELETE - Delete current user (SELF)
+// DELETE http://localhost:5000/api/users/me
+router.delete("/me", protect, deleteMe);
 
 // DELETE - Delete user by ID (ADMIN ONLY)
 // DELETE http://localhost:5000/api/users/:id

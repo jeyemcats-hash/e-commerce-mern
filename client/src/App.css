@@ -1,0 +1,24 @@
+@keyframes bounce-heart {
+  0% {
+    transform: scale(1) translateY(0);
+  }
+  25% {
+    transform: scale(1.15) translateY(-8px);
+  }
+  50% {
+    transform: scale(1.25) translateY(-12px);
+  }
+  75% {
+    transform: scale(1.15) translateY(-6px);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-bounce-heart {
+  animation: bounce-heart 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+  transition: none !important;
+}
+}
+

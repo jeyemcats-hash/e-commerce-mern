@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import Spline from '@splinetool/react-spline';
+import splineScene from '../assets/spline/reactive_background.spline';
 import { useAuth } from '../context/AuthContext.jsx';
 
 function AdminLoginPage() {
@@ -37,8 +39,35 @@ function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
+    <div className="relative min-h-screen bg-neutral-950 text-white flex items-center justify-center px-4 py-8 overflow-hidden">
+      <div
+        className="fixed inset-0 z-0 pointer-events-auto"
+        style={{ width: '100vw', height: '100vh' }}
+        onWheel={(e) => e.preventDefault()}
+        onPointerDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onPointerUp={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onPointerMove={(e) => e.stopPropagation()}
+        onTouchStart={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onTouchMove={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
+        <div className="w-full h-full">
+          <Spline scene={splineScene} className="w-full h-full" />
+        </div>
+      </div>
+      <div className="absolute inset-0 bg-neutral-950/50 z-0 pointer-events-none"></div>
+      <div className="w-full max-w-md relative z-10 pointer-events-auto">
         {/* Background decorative elements */}
         <div className="absolute top-0 left-0 w-40 sm:w-72 h-40 sm:h-72 bg-neutral-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-40 sm:w-72 h-40 sm:h-72 bg-neutral-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-2000"></div>

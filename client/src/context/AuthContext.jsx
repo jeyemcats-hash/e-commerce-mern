@@ -119,7 +119,7 @@ export function AuthProvider({ children }) {
           const parsedUser = JSON.parse(storedUser);
           setUser(parsedUser);
           setIsLoggedIn(true);
-        } catch (parseError) {
+        } catch {
           // If we can't parse, clear everything
           setIsLoggedIn(false);
           setUser(null);
@@ -129,7 +129,7 @@ export function AuthProvider({ children }) {
     };
 
     validateToken();
-  }, [API_URL]);
+  }, [API_URL, storage]);
 
   const handleAuthSuccess = (payload, targetStorage) => {
     clearStorage(targetStorage);
@@ -245,6 +245,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
 }

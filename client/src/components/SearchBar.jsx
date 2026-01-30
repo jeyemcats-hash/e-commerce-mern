@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function SearchBar() {
+function SearchBar({ onSearch, onFilterChange }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState({
@@ -10,18 +10,27 @@ function SearchBar() {
   });
 
   const handleSearch = (e) => {
-    setSearchQuery(e.target.value);
+    const value = e.target.value;
+    setSearchQuery(value);
+    onSearch(value);
   };
 
   const handleFilterChange = (filterType, value) => {
-    setSelectedFilters(prev => ({
-      ...prev,
+    const updated = {
+      ...selectedFilters,
       [filterType]: value
-    }));
+    };
+    setSelectedFilters(updated);
+    onFilterChange(updated);
   };
 
   const clearFilters = () => {
     setSelectedFilters({
+      category: '',
+      priceRange: '',
+      rating: ''
+    });
+    onFilterChange({
       category: '',
       priceRange: '',
       rating: ''
@@ -38,9 +47,9 @@ function SearchBar() {
             value={searchQuery}
             onChange={handleSearch}
             placeholder="Search products..."
-            className="w-full px-4 md:px-5 py-3 md:py-3.5 text-sm md:text-base rounded-lg border-2 border-slate-200 bg-white hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-slate-400 shadow-sm hover:shadow-md"
+            className="w-md px-3 md:px-4 py-2 md:py-2.5 text-sm rounded-lg border border-neutral-300 bg-white hover:border-neutral-400 focus:outline-none focus:border-black transition-all placeholder:text-neutral-500 shadow-none"
           />
-          <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="absolute left-103 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 group-focus-within:text-neutral-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
@@ -49,7 +58,7 @@ function SearchBar() {
         <div className="relative w-full sm:w-auto">
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="w-full sm:w-auto px-4 md:px-5 py-3 md:py-3.5 bg-linear-to-r from-black to-black hover:from-neutral-500 hover:to-neutral-700 text-white rounded-lg transition-all flex items-center justify-center gap-2 font-semibold text-sm md:text-base shadow-md hover:shadow-lg hover:shadow-blue-500/30"
+            className="w-full sm:w-auto px-3 md:px-4 py-2 md:py-2.5 bg-black hover:bg-neutral-800 text-white rounded-lg transition-all flex items-center justify-center gap-2 font-normal text-sm shadow-none border border-black"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
@@ -59,15 +68,15 @@ function SearchBar() {
 
           {/* Filter Dropdown */}
           {isFilterOpen && (
-            <div className="absolute top-full left-0 sm:right-0 sm:left-auto mt-3 bg-white border-2 border-slate-200 rounded-xl shadow-xl z-30 w-full sm:w-64 p-5">
-              <div className="space-y-4">
+            <div className="absolute top-full left-0 sm:right-0 sm:left-auto mt-2 bg-white border border-neutral-200 rounded-lg shadow-md z-30 w-full sm:w-64 p-4">
+              <div className="space-y-3">
                 {/* Category Filter */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2.5">Category</label>
+                  <label className="block text-sm font-normal text-neutral-900 mb-2">Category</label>
                   <select
                     value={selectedFilters.category}
                     onChange={(e) => handleFilterChange('category', e.target.value)}
-                    className="w-full px-4 py-2.5 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white hover:border-blue-300 transition-all"
+                    className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-black bg-white hover:border-neutral-400 transition-all font-normal"
                   >
                     <option value="">All Categories</option>
                     <option value="Pants">Pants</option>
@@ -79,11 +88,11 @@ function SearchBar() {
 
                 {/* Price Range Filter */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2.5">Price Range</label>
+                  <label className="block text-sm font-normal text-neutral-900 mb-2">Price Range</label>
                   <select
                     value={selectedFilters.priceRange}
                     onChange={(e) => handleFilterChange('priceRange', e.target.value)}
-                    className="w-full px-4 py-2.5 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white hover:border-blue-300 transition-all"
+                    className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-black bg-white hover:border-neutral-400 transition-all font-normal"
                   >
                     <option value="">All Prices</option>
                     <option value="0-750">₱0 - ₱750</option>
@@ -95,11 +104,11 @@ function SearchBar() {
 
                 {/* Rating Filter */}
                 <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2.5">Rating</label>
+                  <label className="block text-sm font-normal text-neutral-900 mb-2">Rating</label>
                   <select
                     value={selectedFilters.rating}
                     onChange={(e) => handleFilterChange('rating', e.target.value)}
-                    className="w-full px-4 py-2.5 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white hover:border-blue-300 transition-all"
+                    className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-lg focus:outline-none focus:border-black bg-white hover:border-neutral-400 transition-all font-normal"
                   >
                     <option value="">All Ratings</option>
                     <option value="4">4★ & up</option>
@@ -112,7 +121,7 @@ function SearchBar() {
                 {/* Clear Filters Button */}
                 <button
                   onClick={clearFilters}
-                  className="w-full px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg transition-all font-semibold text-sm mt-5 border-2 border-slate-200"
+                  className="w-full px-4 py-2 bg-white hover:bg-neutral-50 text-neutral-900 rounded-lg transition-all font-normal text-sm mt-4 border border-neutral-300"
                 >
                   Clear All
                 </button>
@@ -126,17 +135,17 @@ function SearchBar() {
       {(selectedFilters.category || selectedFilters.priceRange || selectedFilters.rating) && (
         <div className="mt-4 flex flex-wrap gap-2">
           {selectedFilters.category && (
-            <span className="px-3 py-1.5 bg-linear-to-r from-blue-600 to-blue-500 text-white rounded-full text-xs md:text-sm font-semibold shadow-md">
+            <span className="px-3 py-1.5 bg-black text-white rounded-full text-xs md:text-sm font-normal shadow-sm">
               {selectedFilters.category}
             </span>
           )}
           {selectedFilters.priceRange && (
-            <span className="px-3 py-1.5 bg-linear-to-r from-blue-600 to-blue-500 text-white rounded-full text-xs md:text-sm font-semibold shadow-md">
+            <span className="px-3 py-1.5 bg-black text-white rounded-full text-xs md:text-sm font-normal shadow-sm">
               {selectedFilters.priceRange}
             </span>
           )}
           {selectedFilters.rating && (
-            <span className="px-3 py-1.5 bg-linear-to-r from-blue-600 to-blue-500 text-white rounded-full text-xs md:text-sm font-semibold shadow-md">
+            <span className="px-3 py-1.5 bg-black text-white rounded-full text-xs md:text-sm font-normal shadow-sm">
               {selectedFilters.rating}★
             </span>
           )}

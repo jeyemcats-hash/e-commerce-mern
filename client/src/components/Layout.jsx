@@ -8,6 +8,11 @@ function Layout({ children }) {
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 768);
 
   useEffect(() => {
+    const storedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.classList.toggle('theme-dark', storedTheme === 'dark');
+  }, []);
+
+  useEffect(() => {
     let resizeTimeout;
     
     const handleResize = () => {
@@ -39,12 +44,12 @@ function Layout({ children }) {
       <NavigationBar />
 
       <div className="flex pt-16 w-full flex-1 overflow-hidden">
-        <div className={`flex-1 p-4 md:p-8 bg-gray-50 overflow-y-auto transition-all duration-500 ease-in-out ${isSidebarOpen && !isSmallScreen ? 'md:ml-64' : 'ml-0'}`}>
-          <Carousel />
+        <div className={`flex-1 p-4 md:p-8 bg-neutral-50 overflow-y-auto transition-all duration-500 ease-in-out ${isSidebarOpen && !isSmallScreen ? 'md:ml-64' : 'ml-0'}`}>
+          
           {children}
           <button
             onClick={toggleSidebar}
-            className="fixed top-20 left-4 z-20 p-2 rounded-lg bg-neutral-950 hover:bg-neutral-700 text-white transition-all duration-300"
+            className="fixed top-20 left-4 z-20 p-2 rounded-lg bg-black hover:bg-neutral-800 text-white transition-all duration-300"
             title={isSidebarOpen ? 'Hide sidebar' : 'Show sidebar'}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

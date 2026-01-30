@@ -19,16 +19,33 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: "No order items provided" });
     }
 
-    // Calculate total price
+    // Enrich orderItems with product names from the database
     let totalPrice = 0;
+    const enrichedOrderItems = [];
+    
     for (let item of orderItems) {
+      // Fetch product details to get the name
+      const product = await Product.findById(item.product);
+      
+      if (!product) {
+        return res.status(404).json({ message: `Product not found: ${item.product}` });
+      }
+
+      enrichedOrderItems.push({
+        product: item.product,
+        name: product.name,  // Get the name from the product
+        quantity: item.quantity,
+        price: item.price,
+        currency: item.currency || "PHP",
+      });
+
       totalPrice += item.price * item.quantity;
     }
 
-    // Create the order
+    // Create the order with enriched items
     const order = await Order.create({
       user,
-      orderItems,
+      orderItems: enrichedOrderItems,
       shippingAddress,
       paymentMethod,
       totalPrice,
